@@ -66,6 +66,7 @@ class MyApp(QWidget):
         elem.send_keys("Beggin Maneskin")
         elem.send_keys(Keys.RETURN)
 
+
         soup = BeautifulSoup(driver.page_source, 'lxml')
         search_res = soup.find('div', class_ = 'play-item')
         track_res = search_res.find('div', class_ = 'play-ctrl')

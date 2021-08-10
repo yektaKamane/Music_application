@@ -3,6 +3,14 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, \
                             QHBoxLayout, QVBoxLayout
 from PyQt5.QtCore import QUrl
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+
+# full_file_path = os.path.join(os.getcwd(), 'test.mp3')
+# url = QUrl.fromLocalFile(full_file_path)
+# content = QMediaContent(url)
+#content = QMediaContent(QUrl("https://p.scdn.co/mp3-preview/8226164717312bc411f8635580562d67e191a754?cid=9535173dce7c4a5d8049be9aeeb229ba"))
 
 
 class MyApp(QWidget):
@@ -43,11 +51,29 @@ class MyApp(QWidget):
         self.player.setMuted(not self.player.isMuted())
 
     def playAudioFile(self):
-        # full_file_path = os.path.join(os.getcwd(), 'test.mp3')
-        # url = QUrl.fromLocalFile(full_file_path)
-        # content = QMediaContent(url)
-        content = QMediaContent(QUrl("https://p.scdn.co/mp3-preview/8226164717312bc411f8635580562d67e191a754?cid=9535173dce7c4a5d8049be9aeeb229ba"))
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        options.add_argument('window-size=1920x1080')
+        options.add_argument("disable-gpu")
 
+        driver = webdriver.Chrome(executable_path = 'C:\\Users\\lenovo\\Desktop\\Spotify-project\\chromedriver.exe', options=options)
+        driver.get('https://freemp3cloud.com/')
+
+        assert "Music" in driver.title
+
+        elem = driver.find_element_by_name("searchSong")
+        elem.clear()
+        elem.send_keys("Beggin Maneskin")
+        elem.send_keys(Keys.RETURN)
+
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        search_res = soup.find('div', class_ = 'play-item')
+        track_res = search_res.find('div', class_ = 'play-ctrl')
+        url = track_res.get('data-src')
+        print((track_res).encode('utf8'))
+        print(url)
+
+        content = QMediaContent(QUrl(url))
         self.player.setMedia(content)
         self.player.play()
 

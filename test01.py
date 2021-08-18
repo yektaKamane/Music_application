@@ -31,8 +31,11 @@ class Spotify():
 
         results = spotify.search(q='artist:' + name, type='artist')
         items = results['artists']['items']
-        for item in items:
-            print(item)
+        for i in range(5):
+            try:
+                print(items[i])
+            except:
+                print("error")
 
     def search_songs(self, song_name):
         name = song_name
@@ -51,5 +54,5 @@ class Spotify():
 
 if __name__ == "__main__":
     s1 = Spotify()
-    #s1.search_artist("Radiohead")
-    s1.search_songs("Common People")
+    s1.search_artist("selena gomez")
+    #s1.search_songs("Common People")
